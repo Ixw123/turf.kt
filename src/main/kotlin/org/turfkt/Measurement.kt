@@ -18,10 +18,13 @@ private fun calculateArea( geom: Geometry): Number{
     var total = 0.0
     var i: Int
     when (geom) {
-        is Polygon -> polygonArea(geom.coordinates)
+        is Polygon -> { 
+            polygonArea(geom.coordinates)
+            val numberOfRimgCoord = geom.coordinates.size
+        }
         is MultiPolygon -> {
-            for (i in 0..(geom.coordinates.map { it[0] }.size - 1)) {
-                total += polygonArea(geom.get(i).coordinates)
+            for (i in 0..(geom.coordinates[0].size - 1)) {
+                total = total + polygonArea(geom.coordinates[i])
             }
             return total
         }
@@ -34,25 +37,26 @@ private fun calculateArea( geom: Geometry): Number{
     return 0
 }
 
-fun polygonArea(coordinates: Any): Double {
+fun polygonArea(coordinates: Any): Number {
     var total = 0.0
-    if (coordinates && coordinates.size > 0) {
+    if (coordinates && coordinates.length > 0) {
         total += abs(ringArea(coordinates[0]))
-        for (i: Int in 1..(coordinates[0][0].size - 1)){
+        for (i: Int in 1..(coordinates.length - 1)){
             total -= abs(ringArea(coordinates[i]))
         }
     }
     return total
 }
-fun ringArea(val coords: Array<Number>): Double {
-    var p1: Double
-    var p2: Double
-    var p3: Double
+fun ringArea(val coords: Array<Number>): Number {
+    var p1: Number
+    var p2: Number
+    var p3: Number
     var lowerIndex: Int
     var middleIndex: Int
     var upperIndex: Int
     var i: Int
     var total = 0.0
+
     const coordinateLength = coords.size
 
     if (coordinateLength > 2) {
@@ -85,7 +89,7 @@ fun ringArea(val coords: Array<Number>): Double {
 fun Geometry.area(geojson: Any) { return geojson.fold(geojson) { return value + calculateArea(geom) }
 fun Feature.area(geojson: Any) = Geometry.area(geojson)
 
-fun FeatureCollection.area(geojson: Any): Double {
+fun FeatureCollection.area(geojson: Any): Number {
     var total = 0.0
     for (feature in geojson) {
         total += Feature.area(feature)
