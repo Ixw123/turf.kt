@@ -19,17 +19,18 @@ private fun calculateArea( geom: Geometry): Number{
     var i: Int
     when (geom) {
         is Polygon -> { 
-            polygonArea(geom.coordinates)
-            val numberOfRimgCoord = geom.coordinates.size
+            val size = geom.coordinates.size
+            return polygonArea(geom.coordinates)
         }
         is MultiPolygon -> {
-            for (i in 0..(geom.coordinates[0].size - 1)) {
-                total = total + polygonArea(geom.coordinates[i])
+            val size = geom.coordinates.size
+            for (i in 0..(geom.coordinates.size - 1)) {
+                total += polygonArea(geom.coordinates.map {it[i]})
             }
             return total
         }
         is Point -> return 0
-        is MultiPoint -> return 0 
+        is MultiPoint -> return 0
         is LineString -> return 0
         is MultiLineString -> return 0
         else -> throw UnsupportedOperationException("Can not calculate area of unrecognized Geometry type: ${geom::class.java.name}")
@@ -37,27 +38,28 @@ private fun calculateArea( geom: Geometry): Number{
     return 0
 }
 
-fun polygonArea(coordinates: Any): Number {
+fun polygonArea(coordinates: Any): Double {
     var total = 0.0
-    if (coordinates && coordinates.length > 0) {
+    val coordSize = coordinates.size
+    if (coordinates && coordSize > 0) {
         total += abs(ringArea(coordinates[0]))
-        for (i: Int in 1..(coordinates.length - 1)){
+        for (i: Int in 1..(coordSize - 1)){
             total -= abs(ringArea(coordinates[i]))
         }
     }
     return total
 }
-fun ringArea(val coords: Array<Number>): Number {
-    var p1: Number
-    var p2: Number
-    var p3: Number
+fun ringArea(val coords: Array<Double>): Double {
+    var p1: Double
+    var p2: Double
+    var p3: Double
     var lowerIndex: Int
     var middleIndex: Int
     var upperIndex: Int
     var i: Int
     var total = 0.0
 
-    const coordinateLength = coords.size
+    const val coordinateLength = coords.size
 
     if (coordinateLength > 2) {
         for (i in 0..(coordinateLength - 1)) {
@@ -86,10 +88,10 @@ fun ringArea(val coords: Array<Number>): Number {
     return total
 }
 //private fun area()
-fun Geometry.area(geojson: Any) { return geojson.fold(geojson) { return value + calculateArea(geom) }
+fun Geometry.area(geojson: Any) { return geojson.fold(geojson) { return value + calculateArea(geom) }}
 fun Feature.area(geojson: Any) = Geometry.area(geojson)
 
-fun FeatureCollection.area(geojson: Any): Number {
+fun FeatureCollection.area(geojson: Any): Double {
     var total = 0.0
     for (feature in geojson) {
         total += Feature.area(feature)
