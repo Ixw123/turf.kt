@@ -9,12 +9,12 @@ import geojsonkt.Point
 import geojsonkt.MultiPoint
 import geojsonkt.LineString
 import geojsonkt.MultiLineString
-//import geojsonkt.Position
+import geojsonkt.Position
 
 import kotlin.math.sin
 import kotlin.math.abs
 
-private fun calculateArea( geom: Geometry): Number{
+private fun calculateArea( geom: Geometry): Double{
     var total = 0.0
     var i: Int
     when (geom) {
@@ -25,41 +25,41 @@ private fun calculateArea( geom: Geometry): Number{
         is MultiPolygon -> {
             val size = geom.coordinates.size
             for (i in 0..(geom.coordinates.size - 1)) {
-                total += polygonArea(geom.coordinates.map {it[i]})
+                total += polygonArea(geom.coordinates[i])
             }
             return total
         }
-        is Point -> return 0
-        is MultiPoint -> return 0
-        is LineString -> return 0
-        is MultiLineString -> return 0
+        is Point -> return 0.0
+        is MultiPoint -> return 0.0
+        is LineString -> return 0.0
+        is MultiLineString -> return 0.0
         else -> throw UnsupportedOperationException("Can not calculate area of unrecognized Geometry type: ${geom::class.java.name}")
     }
-    return 0
+    return 0.0
 }
 
-fun polygonArea(coordinates: Any): Double {
+private fun polygonArea(coordinates: Array<Array<Position>>): Double {
     var total = 0.0
-    val coordSize = coordinates.size
-    if (coordinates && coordSize > 0) {
+    //val coordSize = coordinates.size
+    if (coordinates.isNotEmpty()) {
         total += abs(ringArea(coordinates[0]))
-        for (i: Int in 1..(coordSize - 1)){
+        for (i: Int in 1..(coordinates.size - 1)){
             total -= abs(ringArea(coordinates[i]))
         }
     }
     return total
 }
-fun ringArea(val coords: Array<Double>): Double {
-    var p1: Double
-    var p2: Double
-    var p3: Double
+private fun ringArea(coords: Array<Position>): Double {
+    var p1: Position
+    var p2: Position
+    var p3: Position
     var lowerIndex: Int
     var middleIndex: Int
     var upperIndex: Int
     var i: Int
     var total = 0.0
 
-    const val coordinateLength = coords.size
+    val coordinateLength = coords.size
 
     if (coordinateLength > 2) {
         for (i in 0..(coordinateLength - 1)) {
@@ -78,9 +78,9 @@ fun ringArea(val coords: Array<Double>): Double {
                 middleIndex = i + 1
                 upperIndex = i + 2
             }
-            p1 = T[lowerIndex]
-            p2 = T[middleIndex]
-            p3 = T[upperIndex]
+            p1 = coords[lowerIndex]
+            p2 = coords[middleIndex]
+            p3 = coords[upperIndex]
             total += (p3[0].toRadians() - p1[0].toRadians()) * sin(p2[1].toRadians())
         }   
         total *= (EARTH_RADIUS * EARTH_RADIUS / 2)
@@ -88,13 +88,27 @@ fun ringArea(val coords: Array<Double>): Double {
     return total
 }
 //private fun area()
-fun Geometry.area(geojson: Any) { return geojson.fold(geojson) { return value + calculateArea(geom) }}
-fun Feature.area(geojson: Any) = Geometry.area(geojson)
+fun Geometry.area() = calculateArea(this)
+fun Polygon.area() = calculateArea(this)
+fun MultiPolygon.area() = calculateArea(this)
+fun Feature<*>.area(): Double {
+    return when (geometry) {
+        is Polygon -> geometry.area()
+        is MultiPolygon -> geometry.area()
+        is Point -> return 0.0
+        is MultiPoint -> return 0.0
+        is LineString -> return 0.0
+        is MultiLineString -> return 0.0
+        else -> throw UnsupportedOperationException("Can not calculate area of unrecognized Geometry type: ${this::class.java.name}")
+        }
+    return 0.0
 
-fun FeatureCollection.area(geojson: Any): Double {
+    }
+
+fun FeatureCollection.area(): Double {
     var total = 0.0
-    for (feature in geojson) {
-        total += Feature.area(feature)
+    for (feature in features) {
+        total += feature.area()
     }
     return total
 }
