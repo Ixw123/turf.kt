@@ -14,16 +14,19 @@ import geojsonkt.Position
 import kotlin.math.sin
 import kotlin.math.abs
 
+// For testing purposes
+//val EARTHRADIUS = 6378137
+
 private fun calculateArea( geom: Geometry): Double{
     var total = 0.0
-    var i: Int
+    //var i: Int
     when (geom) {
         is Polygon -> { 
-            val size = geom.coordinates.size
+            //val size = geom.coordinates.size
             return polygonArea(geom.coordinates)
         }
         is MultiPolygon -> {
-            val size = geom.coordinates.size
+            //val size = geom.coordinates.size
             for (i in 0..(geom.coordinates.size - 1)) {
                 total += polygonArea(geom.coordinates[i])
             }
@@ -35,7 +38,6 @@ private fun calculateArea( geom: Geometry): Double{
         is MultiLineString -> return 0.0
         else -> throw UnsupportedOperationException("Can not calculate area of unrecognized Geometry type: ${geom::class.java.name}")
     }
-    return 0.0
 }
 
 private fun polygonArea(coordinates: Array<Array<Position>>): Double {
@@ -56,7 +58,7 @@ private fun ringArea(coords: Array<Position>): Double {
     var lowerIndex: Int
     var middleIndex: Int
     var upperIndex: Int
-    var i: Int
+    //var i: Int
     var total = 0.0
 
     val coordinateLength = coords.size
@@ -101,8 +103,6 @@ fun Feature<*>.area(): Double {
         is MultiLineString -> return 0.0
         else -> throw UnsupportedOperationException("Can not calculate area of unrecognized Geometry type: ${this::class.java.name}")
         }
-    return 0.0
-
     }
 
 fun FeatureCollection.area(): Double {
@@ -112,3 +112,16 @@ fun FeatureCollection.area(): Double {
     }
     return total
 }
+
+//fun main() {
+//    val polygon1: Array<Array<Position>>
+//    var position1 = Position(doubleArrayOf(125.0, -15.0))
+//    var position2 = Position(doubleArrayOf(113.0, -22.0))
+//    var position3 = Position(doubleArrayOf(154.0, -27.0))
+//    var position4 = Position(doubleArrayOf(144.0, -15.0))
+//    var position5 = Position(doubleArrayOf(125.0, -15.0))
+//    polygon1 = arrayOf(arrayOf(position1, position2, position3, position4, position5))
+//    val poly1 = Polygon(polygon1)
+//    val area1 = poly1.area()
+//    println("poly1 area: $area1")
+//}
