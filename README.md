@@ -13,13 +13,13 @@ The list below outlines the Turf functions which currently exist within turf.kt:
   
 ### Measurement
 - [x] along
-- [ ] area
+- [x] area
 - [ ] bbox
-- [ ] bboxPolygon
+- [x] bboxPolygon -> `BBox:toPolygon`
 - [x] bearing
 - [ ] center
 - [ ] centerOfMass
-- [ ] centroid
+- [x] centroid
 - [x] destination
 - [x] distance
 - [ ] envelope
@@ -31,7 +31,7 @@ The list below outlines the Turf functions which currently exist within turf.kt:
 - [ ] rhumbBearing
 - [ ] rhumbDestination
 - [ ] rhumbDistance
-- [ ] square
+- [x] square
 - [ ] greatCircle
 
 ### Coordinate Mutation
@@ -45,8 +45,8 @@ The list below outlines the Turf functions which currently exist within turf.kt:
 - [ ] bboxClip
 - [ ] bezierSpline
 - [ ] buffer
-- [ ] circle
-- [ ] clone
+- [x] circle
+- [x] clone Use `copy`
 - [ ] concave
 - [ ] convex
 - [ ] difference
@@ -64,18 +64,18 @@ The list below outlines the Turf functions which currently exist within turf.kt:
 ### Feature Conversion
 - [ ] combine
 - [ ] explode
-- [ ] flatten
+- [x] flatten
 - [ ] lineToPolygon
 - [ ] polygonize
 - [ ] polygonToLine
 
 ### Misc
 - [ ] kinks
-- [ ] lineArc
+- [x] lineArc -> `arc`
 - [ ] lineChunk
 - [ ] lineIntersect
 - [ ] lineOverlap
-- [ ] lineSegment
+- [x] lineSegment -> `segment`
 - [ ] lineSlice
 - [ ] lineSliceAlong
 - [ ] lineSplit
@@ -152,7 +152,7 @@ See geojson.kt
 - [ ] booleanContains
 - [ ] booleanCrosses
 - [ ] booleanDisjoint
-- [ ] booleanEqual
+- [x] booleanEqual -> `==`, `!=`
 - [ ] booleanOverlap
 - [ ] booleanParallel
 - [ ] booleanPointInPolygon

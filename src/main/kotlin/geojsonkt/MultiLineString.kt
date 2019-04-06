@@ -1,6 +1,8 @@
 package geojsonkt
 
 data class MultiLineString(val coordinates: Array<Array<Position>>, override val bbox: BBox? = null) : Geometry {
+    companion object;
+
     override val type = "MultiLineString"
 
     override fun equals(other: Any?): Boolean {
@@ -31,6 +33,14 @@ val MultiLineString.size: Int get() = coordinates.size
  * Returns the range of valid indices for the [MultiLineString].
  */
 val MultiLineString.indices: IntRange get() = coordinates.indices
+
+/**
+ * Wraps this [MultiLineString] in a [Feature] with the given properties (optional).
+ *
+ * @return A [Feature] wrapping this [MultiLineString].
+ */
+fun MultiLineString.toFeature(properties: MutableMap<String, Any> = mutableMapOf()): Feature<MultiLineString> =
+        Feature(this, properties)
 
 /**
  * Allows indexed based access to the line strings contained in this [MultiLineString].
