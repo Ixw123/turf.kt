@@ -2,7 +2,7 @@ package org.turfkt
 
 import geojsonkt.*
 
-fun envelope(g: Geometry): Polygon = when(g) {
+fun getEnvelope(g: Geometry): Polygon = when(g) {
     is Polygon, 
     is MultiPolygon,
     is LineString,
@@ -14,4 +14,4 @@ fun envelope(g: Geometry): Polygon = when(g) {
     else -> throw UnsupportedOperationException("Can not BBox unrecognized Geometry type: ${g::class.java.name}")
 }
 
-fun Geometry.envelope(): Polygon = envelope(this)
+fun Geometry.envelope(): Polygon = getEnvelope(this)
