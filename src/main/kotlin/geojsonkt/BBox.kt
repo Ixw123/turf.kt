@@ -71,17 +71,17 @@ fun GeoJson.bbox() = {
 }
 
 private fun bbox(coords: Sequence<Position>): BBox {
-    var result = BBox(doubleArrayOf(POSITIVE_INFINITY, POSITIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY))
+    var result = doubleArrayOf(POSITIVE_INFINITY, POSITIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY)
 
     for(coord in coords) {
             // Need to look at this and figure out what to do to be able to set these values properly
-            if (result.southWest[0] > coord[0]) { result.southWest[0] = coord[0] }
-            if (result.southWest[1] > coord[1]) { result.southWest[1] = coord[1] }
-            if (result.northEast[0] < coord[0]) { result.northEast[0] = coord[0] }
-            if (result.northEast[1] < coord[1]) { result.northEast[1] = coord[1] }
+            if (result[0] > coord[0]) { result[0] = coord[0] }
+            if (result[1] > coord[1]) { result[1] = coord[1] }
+            if (result[2] < coord[0]) { result[2] = coord[0] }
+            if (result[3] < coord[1]) { result[3] = coord[1] }
     }
 
-    return result
+    return BBox(result)
 }
 
 private fun coords(g: Geometry): Sequence<Position> = when(g) {
