@@ -14,3 +14,7 @@ fun getEnvelope(geojson: GeoJson): Polygon = when(geojson) {
 }
 
 fun Geometry.envelope(): Polygon = getEnvelope(this)
+
+fun FeatureCollection.envelope(): Polygon = getEnvelope(this)
+
+fun GeometryCollection.envelope(): Polygon = getEnvelope(this)
