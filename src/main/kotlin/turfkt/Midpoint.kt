@@ -4,25 +4,13 @@ import geojsonkt.*
 import turfkt.*
 
 fun Position.midpoint(to: Position): Position {
-    val dist = this.distance(to)
-    val heading = this.bearing(to)
-    val units = "" // not sure what to have this default to but i noticed it was not used at all in this instance
+    val dist = distance(to)
+    val heading = bearing(to)
 
-    return this.destination(dist/2, heading, units)
+    return destination(dist/2, heading)
 }
 
-fun Point.midpoint(to: Position): Position {
-    val dist = this.distance(to)
-    val heading = this.bearing(to)
-    val units = ""
+fun Point.midpoint(to: Position): Position = coordinate.midpoint(to)
 
-    return this.destination(dist/2, heading, units)
-}
-// Not sure if you meant a feature of points or not but i think that is all that is implemented
-fun Feature<Point>.midpoint(to: Position): Position {
-    val dist = this.distance(to)
-    val heading = this.bearing(to)
-    val units = ""
-
-    return this.destination(dist/2, heading, units)
-}
+// I think this would need the index of the starting coordinate to use
+fun Feature<Point>.midpoint(to: Position): Position = geometry.coordinate.midpoint(to)

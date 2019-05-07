@@ -21,7 +21,6 @@ fun GeoJson.centerOfMass(): Position = when (this) {
         var yj: Double
         var a: Double
         var translation = centre
-        // val point = coords(this)
         var neutralizedPoints = coords(this).map {  point -> Position(point[0] - translation.x, point[1] - translation.y) }
 
         for (i in 0 until coordsInPoly.size) {
@@ -59,7 +58,7 @@ fun GeoJson.centerOfMass(): Position = when (this) {
             }
         }
     }
-    // Yet to implement the convex class to appropriately deal with the else it needs convex
+    // Yet to implement the convex class to appropriately deal with the else it needs convexHull
     else -> throw UnsupportedOperationException("centerOfMass is not supported on this GeoJson type: ${this.type}")
 }
 

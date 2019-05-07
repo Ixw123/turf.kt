@@ -2,16 +2,15 @@ package org.turfkt
 
 import geojsonkt.*
 
-fun getEnvelope(g: Geometry): Polygon = when(g) {
+fun getEnvelope(geojson: GeoJson): Polygon = when(geojson) {
     is Polygon, 
     is MultiPolygon,
     is LineString,
-    is MultiLineString -> g.bbox!!.toPolygon()
+    is MultiPoint,
+    is MultiLineString -> geojson.bbox().toPolygon()
 
-    is Point,
-    is MultiPoint -> throw UnsupportedOperationException("Can not BBox Point or Multipoint Geometry type: ${g::class.java.name}")
-
-    else -> throw UnsupportedOperationException("Can not BBox unrecognized Geometry type: ${g::class.java.name}")
+    is Point -> throw UnsupportedOperationException("Can not BBox on Point Geometry type: ${geojson::class.java.name}")
+    else -> throw UnsupportedOperationException("Can not BBox unrecognized Geometry type: ${geojson::class.java.name}")
 }
 
 fun Geometry.envelope(): Polygon = getEnvelope(this)

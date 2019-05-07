@@ -3,11 +3,6 @@ package geojsonkt
 import kotlin.Double.Companion.POSITIVE_INFINITY
 import kotlin.Double.Companion.NEGATIVE_INFINITY
 
-//@Suppress("DIVISION_BY_ZERO")
-//const val positiveInfinity: Double = 1.0 / 0.0
-//@Suppress("DIVISION_BY_ZERO")
-//const val negativeINfinity: Double = -1.0 / 0.0
-
 fun BBox(swlon: Double, swlat: Double, nelon: Double, nelat: Double) =
         BBox(doubleArrayOf(swlon, swlat, nelon, nelat))
 
@@ -55,17 +50,15 @@ fun BBox.toPolygon(): Polygon {
     return Polygon(arrayOf(arrayOf(northWest, southWest, southEast, northEast, northWest)))
 }
 
-// Added bbox things
-
-fun GeoJson.bbox() = {
+fun GeoJson.bbox(): BBox {
     when(this) {
-        is Point -> throw UnsupportedOperationException("Can not calculate BBox of Point Geometry type: ${this::class.java.name}")
-        is LineString -> bbox(coords(this))
-        is Polygon -> bbox(coords(this))
-        is MultiPoint -> throw UnsupportedOperationException("Can not calculate BBox of MultiPoint Geometry type: ${this::class.java.name}")
-        is MultiLineString -> bbox(coords(this))
-        is MultiPolygon -> bbox(coords(this))
-        is GeometryCollection -> bbox(coords(this))
+        is Point -> return bbox(coords(this))
+        is LineString -> return bbox(coords(this))
+        is Polygon -> return bbox(coords(this))
+        is MultiPoint -> return bbox(coords(this))
+        is MultiLineString -> return bbox(coords(this))
+        is MultiPolygon -> return bbox(coords(this))
+        is GeometryCollection -> return bbox(coords(this))
         else -> throw UnsupportedOperationException("Can not calculate BBox of unrecognized Geometry type: ${this::class.java.name}")
     }
 }
@@ -74,7 +67,6 @@ private fun bbox(coords: Sequence<Position>): BBox {
     var result = doubleArrayOf(POSITIVE_INFINITY, POSITIVE_INFINITY, NEGATIVE_INFINITY, NEGATIVE_INFINITY)
 
     for(coord in coords) {
-            // Need to look at this and figure out what to do to be able to set these values properly
             if (result[0] > coord[0]) { result[0] = coord[0] }
             if (result[1] > coord[1]) { result[1] = coord[1] }
             if (result[2] < coord[0]) { result[2] = coord[0] }
